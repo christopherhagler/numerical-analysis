@@ -1,7 +1,7 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -Iinclude -O2 -std=c11
-LDFLAGS = -lm -lcmocka  # Link math library and CMocka
+CFLAGS = -Wall -Wextra -Iinclude -I/opt/homebrew/Cellar/cmocka/1.1.7/include -O2 -std=c11
+LDFLAGS = -L/opt/homebrew/Cellar/cmocka/1.1.7/lib -lm -lcmocka
 
 # Directories
 BUILD_DIR = build
@@ -10,10 +10,10 @@ TEST_DIR = test
 INCLUDE_DIR = include
 
 # Target executable
-TARGET = $(BUILD_DIR)/test_bisection
+TARGET = $(BUILD_DIR)/test_false
 
 # Source files
-SRCS = $(SRC_DIR)/root_finding.c $(TEST_DIR)/test_bisection.c
+SRCS = $(SRC_DIR)/root_finding.c $(TEST_DIR)/test_false_position.c
 
 # Object files (place in the build directory)
 OBJS = $(patsubst %.c, $(BUILD_DIR)/%.o, $(SRCS))
