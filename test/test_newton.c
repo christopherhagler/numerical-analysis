@@ -48,6 +48,6 @@ static void test_newton_invalid_interval(void **state) {
 
 static void test_newton_no_root(void **state) {
     (void)state; // Unused
-    float root = root_newton(RootFinder_Quadratic, Derivative_Quadratic,  5.0, 6.0, 1e-6);
-    assert_true(root);
+    float root = root_newton(ConstantFunc, Derivative_ConstantFunc,  5.0, 6.0, 1e-6);
+    assert_true(isnan(root));
 }
