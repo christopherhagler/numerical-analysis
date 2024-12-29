@@ -35,6 +35,23 @@ float root_false_position(const RootFunction f, float a, float b, const float to
     return c;
 }
 
+float root_newton(const RootFunction f, const RootFunction f_prime, float a, float b, const float tolerance) {
+    if ((a >= b) || (tolerance < 0) || !f || !f_prime)
+        return NAN;
+
+    float point = (b-a)/2;
+
+    int max_iterations = 10000;
+    for (int i = 0; i < max_iterations; i++) {
+        if (fabs(f(point)) < tolerance)
+            return point;
+
+        point = point - (f(point) / f_prime(point));
+    }
+
+    return NAN;
+}
+
 float root_secant(RootFunction f, float a, float b, float tolerance){
     return NAN;
 }

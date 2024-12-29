@@ -10,10 +10,10 @@ TEST_DIR = test
 INCLUDE_DIR = include
 
 # Target executable
-TARGET = $(BUILD_DIR)/test_false
+TARGET = $(BUILD_DIR)/test_runner
 
 # Source files
-SRCS = $(SRC_DIR)/root_finding.c $(TEST_DIR)/test_false_position.c
+SRCS = $(SRC_DIR)/root_finding.c $(wildcard $(TEST_DIR)/*.c)
 
 # Object files (place in the build directory)
 OBJS = $(patsubst %.c, $(BUILD_DIR)/%.o, $(SRCS))

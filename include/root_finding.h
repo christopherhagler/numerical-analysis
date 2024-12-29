@@ -78,4 +78,16 @@ float root_illinois(RootFunction f, float a, float b, float tolerance);
  */
 float root_pegasus(RootFunction f, float a, float b, float tolerance);
 
+/**
+ * Newton's method to find the root of a function.
+ *
+ * @param f         The function whose root is to be found.
+ * @param f_prime   The first derivative of f
+ * @param a         The start of the interval.
+ * @param b         The end of the interval.
+ * @param tolerance The tolerance for the root approximation.
+ * @return          The approximate root, or NAN if no root is found.
+ */
+float root_newton(RootFunction f, RootFunction f_prime, float a, float b, const float tolerance);
+
 #endif // ROOT_FINDING_H
