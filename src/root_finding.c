@@ -90,6 +90,26 @@ float root_secant(const RootFunction f, const float a, const float b, const floa
 }
 
 float root_steffensen(RootFunction f, float a, float b, float tolerance){
+    if ((a >= b) || (tolerance < 0) || !f)
+        return NAN;
+
+    float new_point = (a + b)/2.0f;
+    float previous_point = a;
+
+    int max_iterations = 10000;
+    for (int i = 0; i < max_iterations; i++) {
+        if (fabs(f(new_point)) < tolerance)
+            return new_point;
+
+        // TODO: check for division by zero with f(previous_point)
+        float denominator = (f(previous_point + f(previous_point)) - f(previous_point)) / f(previous_point);
+        if (denominator == 0)
+            return NAN;
+
+        new_point = (previous_point - f(previous_point)) / denominator;
+        previous_point = new_point;
+    }
+
     return NAN;
 }
 
