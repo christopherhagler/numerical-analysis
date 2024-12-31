@@ -48,6 +48,6 @@ static void test_bisection_invalid_interval(void **state) {
 
 static void test_bisection_no_root(void **state) {
     (void)state; // Unused
-    float root = root_bisection(RootFinder_Quadratic, 2.0, 3.0, 1e-6);
+    float root = root_bisection(ConstantFunc, 2.0, 3.0, 1e-6);
     assert_true(isnan(root));
 }

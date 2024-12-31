@@ -38,12 +38,11 @@ float root_false_position(RootFunction f, float a, float b, float tolerance);
  * Secant method to find the root of a function using two initial guesses.
  *
  * @param f         The function whose root is to be found.
- * @param a         The first initial guess.
- * @param b         The second initial guess.
+ * @param guess     The initial guess at the root.
  * @param tolerance The tolerance for the root approximation.
  * @return          The approximate root, or NAN if no root is found.
  */
-float root_secant(RootFunction f, float a, float b, float tolerance);
+float root_secant(RootFunction f, float guess, float tolerance);
 
 /**
  * Steffensen's method to find the root of a function.
@@ -83,11 +82,10 @@ float root_pegasus(RootFunction f, float a, float b, float tolerance);
  *
  * @param f         The function whose root is to be found.
  * @param f_prime   The first derivative of f
- * @param a         The start of the interval.
- * @param b         The end of the interval.
+ * @param guess     The initial guess at the root.
  * @param tolerance The tolerance for the root approximation.
  * @return          The approximate root, or NAN if no root is found.
  */
-float root_newton(RootFunction f, RootFunction f_prime, float a, float b, const float tolerance);
+float root_newton(RootFunction f, RootFunction f_prime, float guess, float tolerance);
 
 #endif // ROOT_FINDING_H

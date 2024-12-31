@@ -1,6 +1,6 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -Iinclude -I/opt/homebrew/Cellar/cmocka/1.1.7/include -O2 -std=c11
+CFLAGS = -g -Wall -Wextra -Iinclude -I/opt/homebrew/Cellar/cmocka/1.1.7/include -std=c11
 LDFLAGS = -L/opt/homebrew/Cellar/cmocka/1.1.7/lib -lm -lcmocka
 
 # Directories

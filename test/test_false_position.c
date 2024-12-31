@@ -48,6 +48,6 @@ static void test_false_pos_invalid_interval(void **state) {
 
 static void test_false_pos_no_root(void **state) {
     (void)state; // Unused
-    float root = root_false_position(RootFinder_Quadratic, 2.0, 3.0, 1e-6);
+    float root = root_false_position(ConstantFunc, 2.0, 3.0, 1e-6);
     assert_true(isnan(root));
 }

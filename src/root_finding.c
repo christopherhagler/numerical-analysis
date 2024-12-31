@@ -2,6 +2,8 @@
 #include <math.h>
 #include "root_finding.h"
 
+#include <stddef.h>
+
 float root_bisection(const RootFunction f, float a, float b, const float tolerance) {
     if ((a >= b) || (f(a) * f(b) > 0) || (tolerance < 0))
       return NAN;
@@ -38,22 +40,20 @@ float root_false_position(const RootFunction f, float a, float b, const float to
     return c;
 }
 
-float root_newton(const RootFunction f, const RootFunction f_prime, float a, float b, const float tolerance) {
-    if ((a >= b) || (tolerance < 0) || !f || !f_prime)
+float root_newton(const RootFunction f, const RootFunction f_prime, float guess, const float tolerance) {
+    if (!guess || (tolerance < 0) || !f || !f_prime)
         return NAN;
-
-    float point = (a + b)/2.0f;
 
     int max_iterations = 10000;
     for (int i = 0; i < max_iterations; i++) {
-        if (fabs(f(point)) < tolerance)
-            return point;
+        if (fabs(f(guess)) < tolerance)
+            return guess;
 
-        float denominator = f_prime(point);
+        float denominator = f_prime(guess);
         if (fabs(denominator) < FLT_EPSILON)
             return NAN;
 
-        point = point - (f(point) / f_prime(point));
+        guess = guess - (f(guess) / f_prime(guess));
     }
 
     return NAN;
@@ -64,59 +64,113 @@ float root_newton(const RootFunction f, const RootFunction f_prime, float a, flo
  * of the function f, or it may be very costly to evaluate. Therefore, the secant method uses a finite
  * difference approximation of the derivative.
  */
-float root_secant(const RootFunction f, const float a, const float b, const float tolerance){
-    if ((a >= b) || (tolerance < 0) || !f)
+float root_secant(const RootFunction f, float guess, const float tolerance){
+    if (!guess || (tolerance < 0) || !f)
         return NAN;
 
-    float new_point = (a + b)/2.0f;
-    float previous_point = a;
+    float another_guess = guess + (0.5f * guess);
 
     int max_iterations = 10000;
     for (int i = 0; i < max_iterations; i++) {
-        if (fabs(f(new_point)) < tolerance)
-            return new_point;
+        if (fabs(f(guess)) < tolerance)
+            return guess;
 
-        float numerator = (f(new_point) * (new_point - previous_point));
-        float denominator = (f(new_point) - f(previous_point));
+        float numerator = (f(guess) * (guess - another_guess));
+        float denominator = (f(guess) - f(another_guess));
 
         if (fabs(denominator) < FLT_EPSILON)
             return NAN;
 
-        previous_point = new_point;
-        new_point = new_point - (numerator / denominator);
+        another_guess = guess;
+        guess = guess - (numerator / denominator);
     }
 
     return NAN;
 }
 
-float root_steffensen(RootFunction f, float a, float b, float tolerance){
-    if ((a >= b) || (tolerance < 0) || !f)
+float root_steffensen(const RootFunction f, const float a, const float b, const float tolerance) {
+    if ((a >= b) || (tolerance <= 0.0f) || (f == NULL))
         return NAN;
 
-    float new_point = (a + b)/2.0f;
-    float previous_point = a;
+    float x_current = 0.5f * (a + b);
 
-    int max_iterations = 10000;
+    const int max_iterations = 10000;
     for (int i = 0; i < max_iterations; i++) {
-        if (fabs(f(new_point)) < tolerance)
-            return new_point;
+        float fx = f(x_current);
+        if (fabsf(fx) < tolerance)
+            return x_current;
 
-        // TODO: check for division by zero with f(previous_point)
-        float denominator = (f(previous_point + f(previous_point)) - f(previous_point)) / f(previous_point);
-        if (denominator == 0)
+        float f_xplusfx = f(x_current + fx);
+        float denominator = f_xplusfx - fx;
+        if (fabsf(denominator) < FLT_EPSILON)
             return NAN;
 
-        new_point = (previous_point - f(previous_point)) / denominator;
-        previous_point = new_point;
+        float x_next = x_current - (fx * fx) / denominator;
+        if (fabsf(x_next - x_current) < tolerance) {
+            return x_next;
+        }
+
+        x_current = x_next;
     }
 
     return NAN;
 }
 
-float root_illinois(RootFunction f, float a, float b, float tolerance){
-    return NAN;
+float root_illinois(const RootFunction f, float a, float b, const float tolerance) {
+    float fa = f(a);
+    float fb = f(b);
+    if (fa * fb > 0.0f)
+        return NAN;
+
+    const int max_iterations = 1000;
+    for (int i = 0; i < max_iterations; i++) {
+        float c = (a * fb - b * fa) / (fb - fa);
+        float fc = f(c);
+
+        if (fabs(fc) < tolerance)
+            return c;
+
+        if (fa * fc < 0.0f) {
+            b = c;
+            fb = fc;
+            fa *= 0.5f;
+        } else {
+            a = c;
+            fa = fc;
+            fb *= 0.5f;
+        }
+    }
+
+    return 0.5f * (a + b);
 }
 
-float root_pegasus(RootFunction f, float a, float b, float tolerance){
-    return NAN;
+float root_pegasus(const RootFunction f, float a, float b, const float tolerance) {
+    float fa = f(a);
+    float fb = f(b);
+    if (fa * fb > 0.0f)
+        return NAN;
+
+    const int max_iterations = 1000;
+    for (int i = 0; i < max_iterations; i++) {
+        float c  = (a * fb - b * fa) / (fb - fa);
+        float fc = f(c);
+
+        if (fabs(fc) < tolerance)
+            return c;
+
+        float old_fa = fa;
+        float old_fb = fb;
+
+        if (old_fb * fc > 0.0f) {
+            b  = c;
+            fb = fc;
+            fa = old_fa * (fc / (fc + old_fb));
+        } else {
+            a  = c;
+            fa = fc;
+            fb = old_fb * (fc / (fc + old_fa));
+        }
+    }
+
+    return 0.5f * (a + b);
 }
