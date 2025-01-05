@@ -9,6 +9,7 @@
 #include "test_illinois.c"
 #include "test_pegasus.c"
 #include "test_secant.c"
+#include "test_interpolation.c"
 
 extern void test_bisection_cubic(void **state);
 extern void test_bisection_quadratic(void **state);
@@ -58,6 +59,8 @@ extern void test_pagasus_positive_quadratic(void **state);
 extern void test_pagasus_invalid_interval(void **state);
 extern void test_pagasus_no_root(void **state);
 
+extern void test_lagrange_quadratic(void **state);
+
 const struct CMUnitTest tests[] = {
     cmocka_unit_test(test_bisection_cubic),
     cmocka_unit_test(test_bisection_quadratic),
@@ -98,7 +101,8 @@ const struct CMUnitTest tests[] = {
     cmocka_unit_test(test_pegasus_logarithm),
     cmocka_unit_test(test_pegasus_positive_quadratic),
     cmocka_unit_test(test_pegasus_invalid_interval),
-    cmocka_unit_test(test_pegasus_no_root)
+    cmocka_unit_test(test_pegasus_no_root),
+    cmocka_unit_test(test_lagrange_quadratic),
 };
 
 int main(void) {

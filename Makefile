@@ -13,7 +13,7 @@ INCLUDE_DIR = include
 TARGET = $(BUILD_DIR)/test_runner
 
 # Source files
-SRCS = $(SRC_DIR)/root_finding.c $(wildcard $(TEST_DIR)/*.c)
+SRCS = $(SRC_DIR)/root_finding.c $(SRC_DIR)/interpolation.c $(wildcard $(TEST_DIR)/*.c)
 
 # Object files (place in the build directory)
 OBJS = $(patsubst %.c, $(BUILD_DIR)/%.o, $(SRCS))
